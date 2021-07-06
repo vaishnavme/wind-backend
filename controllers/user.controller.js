@@ -41,6 +41,26 @@ const createNewUserAccount = async(req, res) => {
     }
 }
 
+const getUserLogin = async(req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({email: email});
+
+    if(user) {
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+        if(isPasswordCorrect) {
+            const token = jwt.sign({ userId: user._id}, secret);
+            return res.json({
+                success: true,
+                user: {_id: user._id, name: user.name, username: user.username, email: user.email},
+                token,
+                message: "Login successfull!"
+            })
+        }
+    }
+}
+
 module.exports = {
-    createNewUserAccount
+    createNewUserAccount,
+    getUserLogin
 }

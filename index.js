@@ -26,5 +26,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => {
-    console.log(`Project running on http://localhost:${PORT}/api...`);
+    console.log(`Project running on http://localhost:${PORT}...`);
 })
