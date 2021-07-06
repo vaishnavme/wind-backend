@@ -8,7 +8,7 @@ const createNewUserAccount = async(req, res) => {
     try {
         const {name, username, email, password} = req.body;
 
-        const isUserAlredayExist = await User.findById({email: email});
+        const isUserAlredayExist = await User.findOne({email: email});
 
         if(isUserAlredayExist) return res.json({
             success: false,
