@@ -7,11 +7,22 @@ app.use(cors());
 app.use(express.json());
 const { dbConnection } = require("./db/db.connect");
 
+const userRoutes = require("./routes/user.routes");
+
+const errorHandler = require("./middleware/errorHandler");
+const routeHandler = require("./middleware/routeHandler");
+
 dbConnection();
+
+app.use("/user", userRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hyper Social Media");
 })
+
+//middleware
+app.use(routeHandler)
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => {
