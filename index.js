@@ -5,8 +5,11 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+const { dbConnection } = require("./db/db.connect");
 
-app.get("/", (rq, res) => {
+dbConnection();
+
+app.get("/", (req, res) => {
     res.send("Hyper Social Media");
 })
 
