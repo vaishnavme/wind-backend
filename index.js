@@ -8,6 +8,7 @@ app.use(express.json());
 const { dbConnection } = require("./db/db.connect");
 
 const userRoutes = require("./routes/user.routes");
+const postRoutes = require("./routes/post.routes");
 
 const errorHandler = require("./middleware/errorHandler");
 const routeHandler = require("./middleware/routeHandler");
@@ -15,6 +16,7 @@ const routeHandler = require("./middleware/routeHandler");
 dbConnection();
 
 app.use("/user", userRoutes);
+app.use("/posts", postRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hyper Social Media");
