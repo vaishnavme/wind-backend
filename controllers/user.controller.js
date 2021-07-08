@@ -3,6 +3,7 @@ const { json } = require("express");
 const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET_KEY;
 const { User } = require("../models/user.model");
+const { extend } = require("lodash");
 
 const createNewUserAccount = async(req, res) => {
     try {
@@ -45,16 +46,59 @@ const getUserLogin = async(req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({email: email});
 
-    if(user) {
-        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if(!user) {
+        res.json({
+            success: false,
+            message: "No user found for this email address"
+        })
+    } 
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    
+    if(isPasswordCorrect) {
+        const token = jwt.sign({ userId: user._id}, secret);
+        return res.json({
+            success: true,
+            user: {_id: user._id, name: user.name, username: user.username, email: user.email},
+            token,
+            message: "Login successfull!"
+        })
+    }
+}
 
-        if(isPasswordCorrect) {
-            const token = jwt.sign({ userId: user._id}, secret);
-            return res.json({
+const updateUserCredentials = async(req, res) => {
+    const { user } = req;
+    const { oldPassword, newPassword, newEmail } = req.body;
+
+    const userAccount = await User.findById(user.userId);
+    if(!userAccount) return res.status(404).json({
+        success: false,
+        messsage: "No user found"
+    })
+
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, userAccount.password);
+    
+    if(isPasswordCorrect) {
+        console.log(true)
+        try {
+            const newHashedPassword = await bcrypt.hash(newPassword, 10)
+            const accountUpdate = {
+                password: newHashedPassword,
+                email: newEmail
+            }
+
+            const updateAccount = extend(userAccount, {
+                userAccount, ...accountUpdate
+            })
+            await updateAccount.save();
+            res.json({
                 success: true,
-                user: {_id: user._id, name: user.name, username: user.username, email: user.email},
-                token,
-                message: "Login successfull!"
+                updateAccount,
+                message: "Account credentials updated."
+            })
+        } catch(err) {
+            res.status(500).json({
+                success: false,
+                message: `Unable to update user ERROR: ${err}`
             })
         }
     }
@@ -62,5 +106,6 @@ const getUserLogin = async(req, res) => {
 
 module.exports = {
     createNewUserAccount,
-    getUserLogin
+    getUserLogin,
+    updateUserCredentials
 }

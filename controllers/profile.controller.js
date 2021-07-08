@@ -22,8 +22,10 @@ const updateProfile = async(req, res) => {
             updatedUserProfile
         })
     } catch(err) {
+        console.log(err)
         res.json({
-            success: false
+            success: false,
+            message: `Error Occured: ${err}`
         })
     }
 }
