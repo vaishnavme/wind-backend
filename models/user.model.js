@@ -20,7 +20,22 @@ const userSchema = new Schema({
         type: String,
         minLength: [8, "Password is too short"],
         required: "Password is required"
-    }
+    },
+    profilePhoto: {
+        type: String,
+    },
+    bio: {
+        type: String,
+        maxLength: 250
+    },
+    followers: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    }],
+    following: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    }]
 })
 
 const User = mongoose.model("User", userSchema);
