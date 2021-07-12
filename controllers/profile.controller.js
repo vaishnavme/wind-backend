@@ -4,7 +4,12 @@ const { extend } = require("lodash");
 const getUserProfile = async(req, res) => {
     const { profileId } = req.params;
     try {
-        const profile = await User.findById(profileId);
+        const profile = await User.findById(profileId)
+                            .populate({
+                                path: "posts", 
+                                populate: {path: "creator", select: "name username profilePhoto"}
+                            }).populate({path: "following", select: "name"});
+
         if(!profile) return res.status(404).json({
             success: false,
             message: "User not found"
