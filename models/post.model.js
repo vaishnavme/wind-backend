@@ -12,10 +12,10 @@ const postSchema = new Schema({
     content: {
         type: String
     },
-    likes: {
+    likes: [{
         type: Schema.Types.ObjectId,
         ref: "User",
-    },
+    }],
     comments: [{
         user: { 
             type: Schema.Types.ObjectId, 
