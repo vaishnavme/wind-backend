@@ -104,8 +104,26 @@ const updateUserCredentials = async(req, res) => {
     }
 }
 
+const getAllUser = async(req, res) => {
+    try {
+        const allUsers = await User.find({}).select("name username profilePhoto posts bio followers following");
+        res.json({
+            success: true,
+            allUsers,
+            message: "Data fetch successfully!"
+        })
+
+    } catch(err) {
+        res.status(500).json({
+            success: false,
+            message: `Unable to update user ERROR: ${err}`
+        })
+    }
+}
+
 module.exports = {
     createNewUserAccount,
     getUserLogin,
-    updateUserCredentials
+    updateUserCredentials,
+    getAllUser
 }
