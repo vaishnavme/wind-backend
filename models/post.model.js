@@ -5,9 +5,6 @@ const postSchema = new Schema({
     creator: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        populate: {
-            select: 'name username photo' 
-        }
     },
     content: {
         type: String
