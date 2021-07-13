@@ -4,14 +4,18 @@ const follow = async(req, res) => {
     const { user } = req;
     const { profileId } = req.params;
     try {
-        const userAccount = await User.findById(user.userId);
+        const followerAccount = await User.findById(user.userId);
+        const followingAccount = await User.findById(profileId);
 
-        userAccount.following.push(profileId)
-        const newResponse = await userAccount.save();
+        followerAccount.following.push(profileId)
+        followingAccount.followers.push(user.userId);
+
+        await followerAccount.save();
+        await followingAccount.save();
 
         res.json({
             success: true,
-            newResponse,
+            followedId: profileId,
             message: "Followed successfully!"
         })
     } catch(err) {
@@ -27,13 +31,18 @@ const unfollow = async(req, res) => {
     const { user } = req;
     const { profileId } = req.params;
     try {
-        const userAccount = await User.findById(user.userId);
-        userAccount.following.splice(userAccount.following.indexOf(profileId), 1);
-        const newResponse = await userAccount.save();
+        const followerAccount = await User.findById(user.userId);
+        const followingAccount = await User.findById(profileId);
+
+        followerAccount.following.splice(followerAccount.following.indexOf(profileId), 1);
+        followingAccount.followers.splice(followerAccount.followers.indexOf(user.userId), 1);
+
+        await followerAccount.save();
+        await followingAccount.save();
 
         res.json({
             success: true,
-            newResponse,
+            unfollowedId: profileId,
             message: "Unfollowed successfully!"
         })
 
