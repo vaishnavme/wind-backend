@@ -22,8 +22,11 @@ const postSchema = new Schema({
             } 
         },
         content: { type: String },
-        time: { type: Date }
-    }]
+    }],
+    createdAt: { 
+        type: Date, 
+        default: Date.now 
+    },
 })
 
 const Post = mongoose.model("Post", postSchema);
