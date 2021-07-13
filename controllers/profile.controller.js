@@ -8,7 +8,8 @@ const getUserProfile = async(req, res) => {
                             .populate({
                                 path: "posts", 
                                 populate: {path: "creator", select: "name username profilePhoto"}
-                            }).populate({path: "following", select: "name"});
+                            }).populate({path: "following", select: "name username profilePhoto"})
+                            .populate({path: "followers", select: "name username profilePhoto"});
 
         if(!profile) return res.status(404).json({
             success: false,
