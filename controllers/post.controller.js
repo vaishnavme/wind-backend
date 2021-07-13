@@ -2,6 +2,11 @@ const { Post } = require("../models/post.model");
 const { User } = require("../models/user.model");
 const { extend } = require("lodash");
 
+const populateFeed = {
+    path: "creator",
+    select: "name username profilePhoto"
+}
+
 const createNewPost = async(req, res) => {
     const { user } = req;
     const { post } = req.body;
@@ -12,7 +17,8 @@ const createNewPost = async(req, res) => {
             creator: user.userId,
             content: post
         })
-        const savedPost = await newPost.save();
+        let savedPost = await newPost.save()
+        savedPost = await savedPost.populate(populateFeed).execPopulate()
         // update user post collection
         if(!userAccount) return res.status(404).json({
             success: false,
