@@ -12,9 +12,13 @@ const likePost = async(req, res) => {
         })
         post.likes.push(user.userId);
         await post.save();
-
+        const postLiked = {
+            postId: postId,
+            likedBy: user.userId
+        }
         res.json({
             success: true,
+            postLiked,
             message: "Post liked"
         })
     } catch(err) {
@@ -38,8 +42,14 @@ const unlikePost = async(req, res) => {
         post.likes.pull(user.userId);
         await post.save();
 
+        const postUnLiked = {
+            postId: postId,
+            unlikedBy: user.userId
+        }
+
         res.json({
             success: true,
+            postUnLiked,
             message: "Post liked"
         })
     } catch(err) {
