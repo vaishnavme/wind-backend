@@ -19,6 +19,4 @@ router.delete("/like/:postId", unlikePost);
 router.post("/comment/:postId", createCommentToPost)
 router.delete("/comment/:postId/:commentId", deletePostedComment);
 
-// bookmark
-
 module.exports = router;

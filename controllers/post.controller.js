@@ -97,10 +97,12 @@ const deleteUserPost = async(req, res) => {
         if(userId === creatorId) {
             const deletedPost = await Post.findByIdAndDelete(postId);
             userAccount.posts.splice(userAccount.posts.indexOf(deletedPost), 1);
+            userAccount.bookmarks.splice(userAccount.bookmarks.indexOf(deletedPost), 1);
             await userAccount.save();
         }
         res.json({
             success: true,
+            deletedId: postId,
             message: "Post successfully deleted!"
         })
 

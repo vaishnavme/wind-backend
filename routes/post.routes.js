@@ -12,5 +12,6 @@ router.delete("/:postId", deleteUserPost);
 
 // feed
 router.get("/feed", feed);
+// bookmark post
 
 module.exports = router;
