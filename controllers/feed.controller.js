@@ -1,6 +1,5 @@
 const { Post } = require("../models/post.model");
 const { User } = require("../models/user.model");
-const { extend } = require("lodash");
 
 const populateFeed = {
     path: "creator",

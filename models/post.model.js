@@ -14,14 +14,8 @@ const postSchema = new Schema({
         ref: "User",
     }],
     comments: [{
-        user: { 
-            type: Schema.Types.ObjectId, 
-            ref: "User", 
-            populate: { 
-                select: 'name username photo' 
-            } 
-        },
-        content: { type: String },
+        type: Schema.Types.ObjectId,
+        ref: "Comment"
     }],
     createdAt: { 
         type: Date, 

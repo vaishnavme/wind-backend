@@ -1,6 +1,10 @@
+const { Comment } = require("../models/comment.model");
 const { Post } = require("../models/post.model");
-const { User } = require("../models/user.model");
-const { extend } = require("lodash");
+
+const populateOpetions = {
+    path: "commentBy",
+    select: "name username profilePhoto"
+}
 
 const createCommentToPost = async(req, res) => {
     const { user } = req;
@@ -12,16 +16,18 @@ const createCommentToPost = async(req, res) => {
             success: false,
             message: "Post not found"
         })
-        const newComment = {
-            user: user.userId,
-            content: comment
-        }
-        console.log(newComment)
-        post.comments.push(newComment);
-        const posted = await post.save();
+        const newComment = new Comment({
+            commentOn: postId,
+            commentBy: user.userId,
+            comment: comment
+        })
+        let commented = await newComment.save(); 
+        post.comments.push(commented._id);
+        await post.save();
+        commented = await commented.populate(populateOpetions).execPopulate()
         res.json({
             success: true,
-            posted,
+            commented,
             message: "Commented"
         })
     } catch(err) {
@@ -42,13 +48,14 @@ const deletePostedComment = async(req, res) => {
             success: false,
             message: "Post not found"
         })
-
+        await Comment.findByIdAndDelete(commentId);
+        await Comment.save();
         post.comments.splice(post.comments.indexOf(commentId), 1);
         const posts = await post.save();
         
         res.json({
             success: true,
-            posts,
+            commentId,
             message: "Commented"
         })
     } catch(err) {

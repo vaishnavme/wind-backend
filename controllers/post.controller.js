@@ -2,9 +2,33 @@ const { Post } = require("../models/post.model");
 const { User } = require("../models/user.model");
 const { extend } = require("lodash");
 
-const populateFeed = {
+const populateCreator = {
     path: "creator",
     select: "name username profilePhoto"
+}
+
+const populateComment = {
+    path: "comments",
+    select: "comment commentBy",
+    populate: {path: "commentBy", select: "name username profilePhoto"}
+}
+
+const getPostById = async(req, res) => {
+    const { postId } = req.params;
+    try {
+        const post = await Post.findById(postId).populate(populateCreator).populate(populateComment);
+        res.json({
+            success: true,
+            post,
+            message: "Single post fetched"
+        })
+    } catch(err) {
+        console.log(err);
+        res.json({
+            success: false,
+            message: `Error Occured: ${err}`
+        })
+    }
 }
 
 const createNewPost = async(req, res) => {
@@ -18,7 +42,7 @@ const createNewPost = async(req, res) => {
             content: post
         })
         let savedPost = await newPost.save()
-        savedPost = await savedPost.populate(populateFeed).execPopulate()
+        savedPost = await savedPost.populate(populateCreator).execPopulate()
         // update user post collection
         if(!userAccount) return res.status(404).json({
             success: false,
@@ -117,6 +141,7 @@ const deleteUserPost = async(req, res) => {
 
 
 module.exports = {
+    getPostById,
     createNewPost,
     updateUserPost,
     deleteUserPost,
