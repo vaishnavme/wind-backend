@@ -40,7 +40,7 @@ const createNewPost = async(req, res) => {
             content: post
         })
         let savedPost = await newPost.save()
-      
+        savedPost = await savedPost.populate(populateCreator).execPopulate()
         res.json({
             success: true,
             savedPost,
