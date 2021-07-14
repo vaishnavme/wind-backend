@@ -40,7 +40,6 @@ const createCommentToPost = async(req, res) => {
 }
 
 const deletePostedComment = async(req, res) => {
-    const { user } = req;
     const { postId, commentId } = req.params;
     try {
         const post = await Post.findById(postId);
@@ -48,15 +47,15 @@ const deletePostedComment = async(req, res) => {
             success: false,
             message: "Post not found"
         })
-        await Comment.findByIdAndDelete(commentId);
-        await Comment.save();
+        
+        const deleteComment = await Comment.findByIdAndDelete(commentId);
         post.comments.splice(post.comments.indexOf(commentId), 1);
-        const posts = await post.save();
+        await post.save();
         
         res.json({
             success: true,
             commentId,
-            message: "Commented"
+            message: "Delete comment"
         })
     } catch(err) {
         console.log(err);
