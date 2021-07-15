@@ -1,4 +1,19 @@
 const { User } = require("../models/user.model");
+const { Notification } = require("../models/notification.model");
+
+const createFollowerNotification = async(target, source) => {
+    try {
+        const notification = new Notification({
+            notificationType: "NEW FOLLOWER",
+            time: new Date(),
+            sourceUser: source,
+            targetUser: target
+        })
+        await notification.save();
+    } catch(err) {
+        console.log(err)
+    }
+}
 
 const follow = async(req, res) => {
     const { user } = req;
@@ -12,6 +27,8 @@ const follow = async(req, res) => {
 
         await followerAccount.save();
         await followingAccount.save();
+
+        createFollowerNotification(followingAccount._id, followerAccount._id);
 
         res.json({
             success: true,
