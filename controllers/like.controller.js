@@ -1,5 +1,21 @@
 const { Post } = require("../models/post.model");
-const { User } = require("../models/user.model");
+const { Notification } = require("../models/notification.model");
+
+const createLikeNotification = async(source, target) => {
+    try {
+        const notification = new Notification({
+            notificationType: "LIKE",
+            time: new Date(),
+            post: target._id,
+            sourceUser: source,
+            targetUser: target.creator 
+        })
+        await notification.save();
+    } catch(err) {
+        console.log(err)
+    }
+}
+
 
 const likePost = async(req, res) => {
     const { user } = req;
@@ -15,6 +31,11 @@ const likePost = async(req, res) => {
         const postLiked = {
             postId: postId,
             likedBy: user.userId
+        }
+        const postCreator = post.creator.toString();
+        const userID = user.userId.toString()
+        if(postCreator !== userID) {
+            createLikeNotification(user.userId, post)
         }
         res.json({
             success: true,
