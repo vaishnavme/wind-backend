@@ -9,7 +9,7 @@ const populateCreator = {
 
 const populateComment = {
     path: "comments",
-    select: "comment commentBy",
+    select: "comment commentBy createdAt",
     populate: {path: "commentBy", select: "name username profilePhoto"}
 }
 
