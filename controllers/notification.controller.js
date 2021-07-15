@@ -8,7 +8,9 @@ const populateData = {
 const getUserNotification = async(req, res) => {
     const { user } = req;
     try {
-        const allNotifications = await Notification.find({targetUser: user.userId}).populate(populateData);
+        const notification = await Notification.find({targetUser: user.userId}).populate(populateData);
+
+        const allNotifications = notification.sort((notify1, notify2) => notify2.time - notify1.time)
         res.json({
             success: true,
             allNotifications
