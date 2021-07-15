@@ -1,5 +1,21 @@
 const { Comment } = require("../models/comment.model");
 const { Post } = require("../models/post.model");
+const { Notification } = require("../models/notification.model");
+
+const createCommentNotification = async(target, source) => {
+    try {
+        const notification = new Notification({
+            notificationType: "COMMENT",
+            time: new Date(),
+            post: target._id,
+            sourceUser: source,
+            targetUser: target.creator
+        })
+        await notification.save();
+    } catch(err) {
+        console.log(err)
+    }
+}
 
 const populateOpetions = {
     path: "commentBy",
@@ -25,6 +41,13 @@ const createCommentToPost = async(req, res) => {
         post.comments.push(commented._id);
         await post.save();
         commented = await commented.populate(populateOpetions).execPopulate()
+        
+        const postCreator = post.creator.toString();
+        const commentCreator = user.userId.toString()
+        if(postCreator !== commentCreator) {
+            createCommentNotification(post, user.userId)
+        }
+
         res.json({
             success: true,
             commented,

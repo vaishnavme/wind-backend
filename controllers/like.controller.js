@@ -1,7 +1,7 @@
 const { Post } = require("../models/post.model");
 const { Notification } = require("../models/notification.model");
 
-const createLikeNotification = async(source, target) => {
+const createLikeNotification = async(target, source) => {
     try {
         const notification = new Notification({
             notificationType: "LIKE",
@@ -35,7 +35,7 @@ const likePost = async(req, res) => {
         const postCreator = post.creator.toString();
         const userID = user.userId.toString()
         if(postCreator !== userID) {
-            createLikeNotification(user.userId, post)
+            createLikeNotification(post, user.userId)
         }
         res.json({
             success: true,
