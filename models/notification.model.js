@@ -10,7 +10,10 @@ const notificationSchema = new Schema({
         type: String,
         enum:["LIKE", "COMMENT", "NEW POST", "NEW FOLLOWER"]
     },
-    time: { type: Date },
+    time: { 
+        type: Date, 
+        default: Date.now 
+    },
     post: {
         type: Schema.Types.ObjectId,
         ref: "Post"

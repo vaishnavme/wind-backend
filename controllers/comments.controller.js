@@ -6,7 +6,6 @@ const createCommentNotification = async(target, source) => {
     try {
         const notification = new Notification({
             notificationType: "COMMENT",
-            time: new Date(),
             post: target._id,
             sourceUser: source,
             targetUser: target.creator

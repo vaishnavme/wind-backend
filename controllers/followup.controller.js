@@ -5,7 +5,6 @@ const createFollowerNotification = async(target, source) => {
     try {
         const notification = new Notification({
             notificationType: "NEW FOLLOWER",
-            time: new Date(),
             sourceUser: source,
             targetUser: target
         })

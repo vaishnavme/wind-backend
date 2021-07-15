@@ -5,7 +5,6 @@ const createLikeNotification = async(target, source) => {
     try {
         const notification = new Notification({
             notificationType: "LIKE",
-            time: new Date(),
             post: target._id,
             sourceUser: source,
             targetUser: target.creator 
