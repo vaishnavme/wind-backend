@@ -9,7 +9,7 @@ const populateCreator = {
 
 const populateComment = {
     path: "comments",
-    select: "comment commentBy createdAt",
+    select: "comment commentBy createdAt postMedia",
     populate: {path: "commentBy", select: "name username profilePhoto"}
 }
 
@@ -35,9 +35,10 @@ const createNewPost = async(req, res) => {
     const { user } = req;
     const { post } = req.body;
     try {
+        console.log(post)
         const newPost = new Post({
             creator: user.userId,
-            content: post
+            ...post
         })
         let savedPost = await newPost.save()
         savedPost = await savedPost.populate(populateCreator).execPopulate()

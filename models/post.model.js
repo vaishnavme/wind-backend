@@ -6,6 +6,9 @@ const postSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
     },
+    postMedia: {
+        type: String
+    },
     content: {
         type: String
     },
