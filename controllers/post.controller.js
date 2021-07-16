@@ -1,6 +1,6 @@
 const { Post } = require("../models/post.model");
-const { User } = require("../models/user.model");
-const { extend } = require("lodash");
+const { Comment } = require("../models/comment.model");
+const { Notification } = require("../models/notification.model");
 
 const populateCreator = {
     path: "creator",
@@ -35,7 +35,6 @@ const createNewPost = async(req, res) => {
     const { user } = req;
     const { post } = req.body;
     try {
-        console.log(post)
         const newPost = new Post({
             creator: user.userId,
             ...post
@@ -60,6 +59,8 @@ const deleteUserPost = async(req, res) => {
     const { postId } = req.params;
     try {
         const deletedPost = await Post.findByIdAndDelete(postId);
+        const comment = await Comment.deleteMany({commentOn: postId})
+        const notify = await Notification.deleteMany({post: postId})
         res.json({
             success: true,
             deletedId: deletedPost,
