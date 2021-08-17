@@ -10,16 +10,18 @@ const feed = async(req, res) => {
     const { user } = req;
     try {
         const userAccount = await User.findById(user.userId)
-
+        
         const userPosts = await Post.find({creator: user.userId}).populate(populateFeed);
-        const followingPost = await Post.find({creator: {$in: userAccount.following}}).populate(populateFeed)
+        const followingPost = await Post.find({creator: {$in: userAccount.following}}).populate(populateFeed);
 
-        let userFeed = [...userPosts, ...followingPost];
-        userFeed = userFeed.sort((post1, post2) => post2.createdAt - post1.createdAt)
+        //let feedPosts = await Post.find({}).populate(populateFeed);
+
+        let feedPosts = [...userPosts, ...followingPost];
+        feedPosts = feedPosts.sort((post1, post2) => post2.createdAt - post1.createdAt)
 
         res.json({
             success: true,
-            userFeed,
+            feedPosts,
             message: "feed fetched"
         })
     } catch(err) {

@@ -54,12 +54,16 @@ const createNewPost = async(req, res) => {
             creator: user.userId,
             ...post
         })
-        let savedPost = await newPost.save()
+        let savedPost = await newPost.save();
         savedPost = await savedPost.populate(populateCreator).execPopulate()
 
         const userAccount = await User.findById(user.userId);
-        const followers = await User.find({followers: {$in: userAccount}})
+        // add post id to user model
+        userAccount.posts.push(savedPost._id);
+        await userAccount.save();
 
+        // find user followers and create notification per user
+        const followers = await User.find({followers: {$in: userAccount}})
         if(followers) {
             followers.map((person) => createPostNotification(person._id, savedPost))
         }
@@ -79,14 +83,21 @@ const createNewPost = async(req, res) => {
 }
 
 const deleteUserPost = async(req, res) => {
+    const { user } = req;
     const { postId } = req.params;
     try {
         const deletedPost = await Post.findByIdAndDelete(postId);
         const comment = await Comment.deleteMany({commentOn: postId})
-        const notify = await Notification.deleteMany({post: postId})
+        const notify = await Notification.deleteMany({post: postId});
+
+        // // delete ref of post from user model
+        const userAccount = await User.findById(user.userId);
+        userAccount.posts.splice(userAccount.posts.indexOf(deletedPost._id), 1);
+        await userAccount.save();
+
         res.json({
             success: true,
-            deletedId: deletedPost,
+            deletedPost,
             message: "Post successfully deleted!"
         })
 
