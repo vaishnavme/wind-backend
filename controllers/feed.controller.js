@@ -14,8 +14,6 @@ const feed = async(req, res) => {
         const userPosts = await Post.find({creator: user.userId}).populate(populateFeed);
         const followingPost = await Post.find({creator: {$in: userAccount.following}}).populate(populateFeed);
 
-        //let feedPosts = await Post.find({}).populate(populateFeed);
-
         let feedPosts = [...userPosts, ...followingPost];
         feedPosts = feedPosts.sort((post1, post2) => post2.createdAt - post1.createdAt)
 
